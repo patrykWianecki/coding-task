@@ -24,6 +24,8 @@ public class MockDataForTests {
       convertTextFileToBytes("fileWithInvalidHeaderValues.txt");
   public static final byte[] FILE_WITH_INVALID_ELEMENTS_BYTES =
       convertTextFileToBytes("fileWithInvalidElements.txt");
+  public static final byte[] FILE_WITH_INCORRECT_EXTENSION =
+      convertTextFileToBytes("fileWithIncorrectExtension.json");
   public static final byte[] MIXED_FILE_BYTES = convertTextFileToBytes("mixedFile.txt");
   public static final byte[] VALID_FILE_BYTES = convertTextFileToBytes("validFile.txt");
 
@@ -42,6 +44,7 @@ public class MockDataForTests {
   public static final String THIRD_ELEMENT_DESCRIPTION = "thirdDescription";
   public static final String FILE_NAME = "fileName";
   public static final String RESOURCE_FILE_PATH = "src/test/resources/";
+  public static final String FILE_WITH_TXT_EXTENSION = "file.txt";
 
   public static final LocalDateTime ELEMENT_UPDATED_TIMESTAMP =
       LocalDateTime.of(2020, 2, 11, 7, 13, 30);

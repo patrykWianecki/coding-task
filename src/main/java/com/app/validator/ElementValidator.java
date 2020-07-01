@@ -11,9 +11,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.app.exception.ElementException;
 
 import static java.nio.charset.StandardCharsets.*;
 
@@ -28,19 +31,20 @@ public class ElementValidator {
 
   public void validate(final MultipartFile file, final Map<String, String> errors) {
     if (Objects.isNull(file)) {
-      throw new IllegalArgumentException("File does not exist");
+      throw new ElementException("File does not exist");
     }
+    validateFileExtension(file);
 
     String fileName = file.getName();
     String fileContent;
     try {
       fileContent = new String(file.getBytes(), UTF_8);
     } catch (IOException e) {
-      throw new IllegalArgumentException("Failed to read file " + fileName);
+      throw new ElementException("Failed to read file " + fileName);
     }
 
     if (StringUtils.isBlank(fileContent)) {
-      throw new IllegalArgumentException("Uploaded file has not content");
+      throw new ElementException("Uploaded file has not content");
     } else {
       final List<String> lines = new BufferedReader(new StringReader(fileContent))
           .lines()
@@ -56,6 +60,12 @@ public class ElementValidator {
             .skip(1)
             .forEach(line -> validateElement(line, errors, elementNumber));
       }
+    }
+  }
+
+  private static void validateFileExtension(MultipartFile file) {
+    if (!"txt".equals(FilenameUtils.getExtension(file.getOriginalFilename()))) {
+      throw new ElementException("File has incorrect extension");
     }
   }
 

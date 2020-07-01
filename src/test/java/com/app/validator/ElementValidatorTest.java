@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.exception.ElementException;
+
 import static com.app.data.MockDataForTests.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -29,22 +31,36 @@ class ElementValidatorTest {
   @Test
   void shouldThrowExceptionWhenFileDoesNotExist() {
     // when
-    final IllegalArgumentException exception = assertThrows(
-        IllegalArgumentException.class, () -> elementValidator.validate(null, null));
+    final ElementException exception = assertThrows(
+        ElementException.class, () -> elementValidator.validate(null, null));
 
     // then
     assertEquals("File does not exist", exception.getMessage());
   }
 
   @Test
+  void shouldThrowExceptionWhenFileExtensionIsIncorrect() throws IOException {
+    // given
+    when(fileMock.getBytes()).thenReturn(FILE_WITH_INCORRECT_EXTENSION);
+
+    // when
+    final ElementException exception = assertThrows(
+        ElementException.class, () -> elementValidator.validate(fileMock, null));
+
+    // then
+    assertEquals("File has incorrect extension", exception.getMessage());
+  }
+
+  @Test
   void shouldThrowExceptionWhenFileFailsToRead() throws IOException {
     // given
     when(fileMock.getBytes()).thenThrow(new IOException());
+    when(fileMock.getOriginalFilename()).thenReturn(FILE_WITH_TXT_EXTENSION);
     when(fileMock.getName()).thenReturn(FILE_NAME);
 
     // when
-    final IllegalArgumentException exception = assertThrows(
-        IllegalArgumentException.class, () -> elementValidator.validate(fileMock, null)
+    final ElementException exception = assertThrows(
+        ElementException.class, () -> elementValidator.validate(fileMock, null)
     );
 
     // then
@@ -54,11 +70,12 @@ class ElementValidatorTest {
   @Test
   void shouldThrowExceptionWhenFileHasNoContent() throws IOException {
     // given
+    when(fileMock.getOriginalFilename()).thenReturn(FILE_WITH_TXT_EXTENSION);
     when(fileMock.getBytes()).thenReturn(new byte[0]);
 
     // when
-    final IllegalArgumentException exception = assertThrows(
-        IllegalArgumentException.class, () -> elementValidator.validate(fileMock, null)
+    final ElementException exception = assertThrows(
+        ElementException.class, () -> elementValidator.validate(fileMock, null)
     );
 
     // then
@@ -68,6 +85,7 @@ class ElementValidatorTest {
   @Test
   void shouldValidateCorrectFile() throws IOException {
     // given
+    when(fileMock.getOriginalFilename()).thenReturn(FILE_WITH_TXT_EXTENSION);
     when(fileMock.getBytes()).thenReturn(VALID_FILE_BYTES);
 
     // when
@@ -80,6 +98,7 @@ class ElementValidatorTest {
   @Test
   void shouldValidateFileWithoutElements() throws IOException {
     // given
+    when(fileMock.getOriginalFilename()).thenReturn(FILE_WITH_TXT_EXTENSION);
     when(fileMock.getBytes()).thenReturn(FILE_WITHOUT_ELEMENTS_BYTES);
 
     // when
@@ -92,6 +111,7 @@ class ElementValidatorTest {
   @Test
   void shouldValidateFileWithIncorrectHeader() throws IOException {
     // given
+    when(fileMock.getOriginalFilename()).thenReturn(FILE_WITH_TXT_EXTENSION);
     when(fileMock.getBytes()).thenReturn(FILE_WITH_INVALID_HEADER_BYTES);
 
     // when
@@ -106,6 +126,7 @@ class ElementValidatorTest {
   @Test
   void shouldValidateFileWithIncorrectHeaderValues() throws IOException {
     // given
+    when(fileMock.getOriginalFilename()).thenReturn(FILE_WITH_TXT_EXTENSION);
     when(fileMock.getBytes()).thenReturn(FILE_WITH_INVALID_HEADER_VALUES_BYTES);
 
     // when
@@ -126,6 +147,7 @@ class ElementValidatorTest {
   @Test
   void shouldValidateFileWithIncorrectElementValues() throws IOException {
     // given
+    when(fileMock.getOriginalFilename()).thenReturn(FILE_WITH_TXT_EXTENSION);
     when(fileMock.getBytes()).thenReturn(FILE_WITH_INVALID_ELEMENTS_BYTES);
 
     // when

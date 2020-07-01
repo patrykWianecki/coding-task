@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.app.model.Element;
+import com.app.model.ElementsResponse;
 import com.app.model.dto.ElementDto;
 import com.app.model.mapper.ElementMapper;
 import com.app.repository.ElementRepository;
@@ -34,15 +35,8 @@ public class ElementService {
 
   private final ElementRepository elementRepository;
 
-  public ResponseEntity<List<ElementDto>> addElements(MultipartFile file) throws IOException {
-    if (Objects.isNull(file)) {
-      throw new IllegalArgumentException("File does not exist!");
-    }
-
+  public ResponseEntity<ElementsResponse> addElements(MultipartFile file) throws IOException {
     String fileContent = new String(file.getBytes(), UTF_8);
-    if (fileContent.isBlank()) {
-      throw new IllegalArgumentException("Uploaded file is empty!");
-    }
 
     final List<ElementDto> elementDtos = new BufferedReader(new StringReader(fileContent))
         .lines()
@@ -53,7 +47,11 @@ public class ElementService {
 
     saveElements(elementDtos);
 
-    return ResponseEntity.ok(elementDtos);
+    return ResponseEntity.ok(
+        ElementsResponse.builder()
+            .elements(elementDtos)
+            .build()
+    );
   }
 
   private void saveElements(List<ElementDto> elementsDtos) {
@@ -73,10 +71,10 @@ public class ElementService {
     if (lines.length != 4) {
       return null;
     }
-    String primaryKey = lines[0];
-    String name = lines[1];
-    String description = lines[2];
-    String updatedTimestamp = lines[3];
+    String primaryKey = convertStringNull(lines[0]);
+    String name = convertStringNull(lines[1]);
+    String description = convertStringNull(lines[2]);
+    String updatedTimestamp = convertStringNull(lines[3]);
     if (isElementNotValid(primaryKey, name, description, updatedTimestamp)) {
       return null;
     }
@@ -87,6 +85,10 @@ public class ElementService {
         .description(description)
         .updatedTimestamp(parseDate(updatedTimestamp))
         .build();
+  }
+
+  private static String convertStringNull(String value) {
+    return "null".equals(value) ? null : value;
   }
 
   private static boolean isElementNotValid(String primaryKey, String name, String description,

@@ -1,4 +1,0 @@
-PRIMARY_KEY,NAME,DESCRIPTION,UPDATED_TIMESTAMP
-1,firstName,firstDescription,2017-08-04T10:11:30
-2,secondName,secondDescription,2018-09-14T11:12:40
-3,thirdName,thirdDescription,2019-10-24T12:13:50

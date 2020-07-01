@@ -32,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 class ElementControllerTest {
 
+  private static final String ELEMENTS_MAPPING = "/elements";
+  private static final String PRIMARY_KEY = "primaryKey";
+
   @MockBean
   private ElementService elementService;
   @MockBean
@@ -54,7 +57,7 @@ class ElementControllerTest {
     // when
     mockMvc
         .perform(
-            post("/elements")
+            post(ELEMENTS_MAPPING)
                 .content(toJson(elementDto))
                 .contentType(APPLICATION_JSON)
         )
@@ -76,8 +79,8 @@ class ElementControllerTest {
     // when
     mockMvc
         .perform(
-            get("/elements")
-                .queryParam("primaryKey", ELEMENT_PRIMARY_KEY)
+            get(ELEMENTS_MAPPING)
+                .queryParam(PRIMARY_KEY, ELEMENT_PRIMARY_KEY)
                 .content(toJson(elementDto))
                 .contentType(APPLICATION_JSON)
         )
@@ -104,8 +107,8 @@ class ElementControllerTest {
     // when
     mockMvc
         .perform(
-            delete("/elements")
-                .queryParam("primaryKey", ELEMENT_PRIMARY_KEY)
+            delete(ELEMENTS_MAPPING)
+                .queryParam(PRIMARY_KEY, ELEMENT_PRIMARY_KEY)
                 .content(toJson(elementDto))
                 .contentType(APPLICATION_JSON)
         )

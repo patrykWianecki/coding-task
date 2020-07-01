@@ -1,0 +1,14 @@
+# ADD TEXT FILE
+# curl --location --request POST 'localhost:8888/elements'
+POST localhost:8888/elements
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+# exampleFile
+#Content-Disposition: form-data; name="file"; filename="exampleFile.txt"
+Content-Disposition: form-data; name="file"; filename="{exampleFile}"
+
+# examplePathToFile
+#< C:\Users\UserName\Desktop\exampleFile.txt
+< {examplePathToFile}
+--WebAppBoundary--

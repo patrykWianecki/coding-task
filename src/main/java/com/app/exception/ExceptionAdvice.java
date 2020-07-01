@@ -33,10 +33,15 @@ public class ExceptionAdvice {
     return new ResponseEntity<>(createCustomErrorResponse(e, "INCORRECT_FILE"), NOT_FOUND);
   }
 
+  @ExceptionHandler(value = ElementException.class)
+  public ResponseEntity<CustomErrorResponse> handleValidationException(ElementException e) {
+    return new ResponseEntity<>(createCustomErrorResponse(e, "FILE_VALIDATION_ERROR"), NOT_FOUND);
+  }
+
   private static CustomErrorResponse createCustomErrorResponse(Exception e, String errorCode) {
     return CustomErrorResponse.builder()
         .errorCode(errorCode)
-        .errorMsg(e.getMessage())
+        .errorMessage(e.getMessage())
         .timestamp(LocalDateTime.now())
         .status(NOT_FOUND.value())
         .build();

@@ -13,9 +13,9 @@ import lombok.Setter;
 @Setter
 public class CustomErrorResponse {
 
-  String errorCode;
-  String errorMsg;
-  int status;
+  private String errorCode;
+  private String errorMessage;
+  private int status;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-  LocalDateTime timestamp;
+  private LocalDateTime timestamp;
 }

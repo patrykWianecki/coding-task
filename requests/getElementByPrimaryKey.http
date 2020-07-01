@@ -1,0 +1,2 @@
+# Get file by primaryKey
+GET localhost:8880/elements?primaryKey=1

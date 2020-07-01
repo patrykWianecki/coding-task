@@ -1,0 +1,2 @@
+# Delete file by primaryKey
+DELETE localhost:8880/elements?primaryKey=1
